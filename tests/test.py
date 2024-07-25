@@ -267,11 +267,9 @@ def test_prakriyA():
 
 
 def main():
-    """ """
-    
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-t", "--type", default="iw", 
+        "-t", "--type", default="iw",
         choices=[
             "iw", "prawyAhAra", "ti", "upaXA", "sanXi",
             "XAwu_changes", "paxa", "vikaraNa", "prakriyA"
@@ -293,46 +291,27 @@ def main():
 
     args = parser.parse_args()
 
-    if args.type == "iw":
-        if args.own:
-            print_iw(args.own)
-        else:
-            test_iw()
-    elif args.type == "prawyAhAra":
-        if args.own:
-            print_prawyAhAra(args.own)
-        else:
-            test_prawyAhAra()
-    elif args.type == "ti":
-        if args.own:
-            print_ti(args.own)
-        else:
-            test_ti()
-    elif args.type == "upaXA":
-        if args.own:
-            print_upaXA(args.own)
-        else:
-            test_upaXA()
-    elif args.type == "sanXi":
-        if args.first or args.second:
+    function_mapping = {
+        "iw": (print_iw, test_iw),
+        "prawyAhAra": (print_prawyAhAra, test_prawyAhAra),
+        "ti": (print_ti, test_ti),
+        "upaXA": (print_upaXA, test_upaXA),
+        "XAwu_changes": (print_XAwu_changes, test_XAwu_changes),
+        "paxa": (print_paxa, test_paxa),
+        "vikaraNa": (None, test_vikaraNa),
+        "prakriyA": (None, test_prakriyA),
+        "sanXi": (None, test_sandhi_examples)
+    }
+
+    if args.type in function_mapping:
+        if args.type == "sanXi" and (args.first or args.second):
             test_sandhi(args.first, args.second)
-            # print("Please provide the two terms to be sandhied")
         else:
-            test_sandhi_examples()
-    elif args.type == "XAwu_changes":
-        if args.own:
-            print_XAwu_changes(args.own)
-        else:
-            test_XAwu_changes()
-    elif args.type == "paxa":
-        if args.own:
-            print_paxa(args.own)
-        else:
-            test_paxa()
-    elif args.type == "vikaraNa":
-        test_vikaraNa()
-    elif args.type == "prakriyA":
-        test_prakriyA()
+            own_func, test_func = function_mapping[args.type]
+            if args.own and own_func:
+                own_func(args.own)
+            else:
+                test_func()
 
 
 if __name__ == "__main__":
